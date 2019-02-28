@@ -1,0 +1,48 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - build
+
+variables:
+  DOCKER_DRIVER: overlay2
+  REPOSITORY: "${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}"
+
+before_script:
+  - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
+
+.build_template: &build_definition
+  stage: build
+  script:
+    - IMAGE="${OS}:${OS_VARIANT}"
+    - VARIANT="${CI_JOB_NAME}-${OS_VARIANT}"
+    - docker pull "${REPOSITORY}:${VARIANT}" || true
+    - docker build
+        --cache-from "${REPOSITORY}:${VARIANT}"
+        -t "${REPOSITORY}:${VARIANT}"
+        --build-arg IMAGE="${IMAGE}"
+        "${OS}/"
+    - if [ "${DEFAULT}" = true ]; then
+        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:${CI_JOB_NAME}";
+      fi
+    - docker images
+    - docker push "${REPOSITORY}"
+
+2.7.8-ubuntu:
+  variables:
+    OS: "ubuntu"
+    OS_VARIANT: "18.04"
+    DEFAULT: "true"
+  <<: *build_definition
+
+2.5.5-alpine:
+  variables:
+    OS: "alpine"
+    OS_VARIANT: "3.8"
+    DEFAULT: "true"
+  <<: *build_definition
+
+after_script:
+  - docker logout
