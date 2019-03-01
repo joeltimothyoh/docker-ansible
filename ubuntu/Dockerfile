@@ -8,5 +8,4 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/*
 
-CMD [""]
-ENTRYPOINT ["ansible"]
+CMD ["/bin/bash"]

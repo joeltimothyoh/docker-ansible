@@ -6,5 +6,4 @@ RUN apk update \
     && rm -rf /var/cache/apk/* \
     && rm -rf /tmp/*
 
-CMD [""]
-ENTRYPOINT ["ansible"]
+CMD ["/bin/sh"]
