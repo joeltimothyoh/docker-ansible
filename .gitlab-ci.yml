@@ -16,13 +16,12 @@ before_script:
 .build_template: &build_definition
   stage: build
   script:
-    - IMAGE="${OS}:${OS_VARIANT}"
     - VARIANT="${CI_JOB_NAME}-${OS_VARIANT}"
     - docker pull "${REPOSITORY}:${VARIANT}" || true
     - docker build
         --cache-from "${REPOSITORY}:${VARIANT}"
         -t "${REPOSITORY}:${VARIANT}"
-        --build-arg IMAGE="${IMAGE}"
+        --build-arg IMAGE="${OS}:${OS_VARIANT}"
         "${OS}/"
     - if [ "${DEFAULT}" = true ]; then
         docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:${CI_JOB_NAME}";
