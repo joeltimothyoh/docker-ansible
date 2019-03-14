@@ -8,20 +8,21 @@ stages:
 
 variables:
   DOCKER_DRIVER: overlay2
-  REPOSITORY: "${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}"
-
-before_script:
-  - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
+  IMAGE_NAME: "ansible"
+  REPOSITORY: "${CI_PROJECT_NAMESPACE}/${IMAGE_NAME}"
 
 .build_template: &build_definition
   stage: build
+  before_script:
+    - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
   script:
     - VARIANT="${CI_JOB_NAME}-${OS_VARIANT}"
+    - BASE_IMAGE="${OS}:${OS_VARIANT}"
     - docker pull "${REPOSITORY}:${VARIANT}" || true
     - docker build
         --cache-from "${REPOSITORY}:${VARIANT}"
         -t "${REPOSITORY}:${VARIANT}"
-        --build-arg IMAGE="${OS}:${OS_VARIANT}"
+        --build-arg BASE_IMAGE="${BASE_IMAGE}"
         "${OS}/"
     - if [ "${DEFAULT}" = true ]; then
         docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:${CI_JOB_NAME}";
@@ -29,6 +30,8 @@ before_script:
       fi
     - docker images
     - docker push "${REPOSITORY}"
+  after_script:
+    - docker logout
   when: manual
 
 2.7.8-ubuntu:
@@ -44,6 +47,3 @@ before_script:
     OS_VARIANT: "3.8"
     DEFAULT: "true"
   <<: *build_definition
-
-after_script:
-  - docker logout
