@@ -16,37 +16,66 @@ variables:
   before_script:
     - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
   script:
-    - VARIANT="${TOOL_VARIANT}-${OS}-${OS_VARIANT}"
-    - BASE_IMAGE="${OS}:${OS_VARIANT}"
+    - VARIANT="${ANSIBLE_VERSION}-${OS}-${OS_VARIANT}"
     - docker pull "${REPOSITORY}:${VARIANT}" || true
     - docker build
         --cache-from "${REPOSITORY}:${VARIANT}"
         -t "${REPOSITORY}:${VARIANT}"
         --build-arg BASE_IMAGE="${BASE_IMAGE}"
         "${OS}/"
-    - if [ "${DEFAULT}" = true ]; then
-        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:"${TOOL_VARIANT}-${OS}";
-        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:${OS}";
+    - if [ "${ANSIBLE_VERSION_OS_DEFAULT}" = 'true' ]; then
+        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:"${ANSIBLE_VERSION}-${OS}
+      fi
+    - if [ "${OS_DEFAULT}" = 'true' ]; then
+        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:${OS}"
+      fi
+    - if [ "${LATEST}" = 'true' ]; then
+        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:latest"
       fi
     - docker images
     - docker run -t --rm ${REPOSITORY}:${VARIANT} /bin/sh -c "ansible --version"
-    - docker push "${REPOSITORY}"
+    - if [ "${CI_COMMIT_REF_NAME}" = 'master' ] && [ ! "${DEBUG}" = 'true' ]; then
+        docker push "${REPOSITORY}"
+      fi
   after_script:
     - docker logout
-  when: manual
 
-2.7.8-ubuntu:
+.ubuntu_1804_template:
   variables:
-    TOOL_VARIANT: "2.7.8"
     OS: "ubuntu"
     OS_VARIANT: "18.04"
-    DEFAULT: "true"
-  <<: *build_definition
-
-2.5.5-alpine:
+    BASE_IMAGE: "bionic-20190204"
+.alpine_38_template:
   variables:
-    TOOL_VARIANT: "2.5.5"
     OS: "alpine"
     OS_VARIANT: "3.8"
-    DEFAULT: "true"
+    BASE_IMAGE: "alpine:3.8"
+
+debug-ubuntu:
+  extends: .ubuntu_1804_template
+  variables:
+    DEBUG: "true"
   <<: *build_definition
+debug-alpine:
+  extends: .alpine_38_template
+  variables:
+    DEBUG: "true"
+  <<: *build_definition
+
+2.7.8-ubuntu:
+  extends: .ubuntu_1804_template
+  variables:
+    ANSIBLE_VERSION: "2.7.8"
+    ANSIBLE_VERSION_OS_DEFAULT: "true"
+    OS_DEFAULT: "true"
+    LATEST: "true"
+  <<: *build_definition
+  when: manual
+2.5.5-alpine:
+  extends: .alpine_38_template
+  variables:
+    ANSIBLE_VERSION: "2.5.5"
+    ANSIBLE_VERSION_OS_DEFAULT: "true"
+    OS_DEFAULT: "true"
+  <<: *build_definition
+  when: manual
