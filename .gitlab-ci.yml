@@ -17,8 +17,8 @@ variables:
     - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
   script:
     - if [ ! "${DEBUG}" = 'true' ]; then
-        VARIANT="${ANSIBLE_VERSION}-${OS}-${OS_VARIANT}"
-        docker pull "${REPOSITORY}:${VARIANT}" || true
+        VARIANT="${ANSIBLE_VERSION}-${OS}-${OS_VARIANT}";
+        docker pull "${REPOSITORY}:${VARIANT}" || true;
       else
         VARIANT="debug"
       fi
@@ -31,15 +31,15 @@ variables:
         docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:"${ANSIBLE_VERSION}-${OS}
       fi
     - if [ "${OS_DEFAULT}" = 'true' ]; then
-        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:${OS}"
+        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:${OS}";
       fi
     - if [ "${LATEST}" = 'true' ]; then
-        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:latest"
+        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:latest";
       fi
     - docker images
     - docker run -t --rm ${REPOSITORY}:${VARIANT} /bin/sh -c "ansible --version"
     - if [ "${CI_COMMIT_REF_NAME}" = 'master' ] && [ ! "${DEBUG}" = 'true' ]; then
-        docker push "${REPOSITORY}"
+        docker push "${REPOSITORY}";
       fi
   after_script:
     - docker logout
