@@ -45,7 +45,7 @@ variables:
 
 2.5.5-alpine:
   variables:
-    TOOL_VARIANT: "2.7.8"
+    TOOL_VARIANT: "2.5.5"
     OS: "alpine"
     OS_VARIANT: "3.8"
     DEFAULT: "true"
