@@ -20,7 +20,7 @@ variables:
         VARIANT="${ANSIBLE_VERSION}-${OS}-${OS_VARIANT}";
         docker pull "${REPOSITORY}:${VARIANT}" || true;
       else
-        VARIANT="debug";
+        VARIANT="debug-${OS}-${OS_VARIANT}";
       fi
     - docker build
         --cache-from "${REPOSITORY}:${VARIANT}"
