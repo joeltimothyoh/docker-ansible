@@ -29,6 +29,7 @@ variables:
         docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:${OS}";
       fi
     - docker images
+    - docker run -t --rm ${REPOSITORY}:${VARIANT} /bin/sh -c "ansible --version"
     - docker push "${REPOSITORY}"
   after_script:
     - docker logout
