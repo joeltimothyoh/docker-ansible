@@ -1,7 +1,7 @@
 # docker-ansible [![pipeline-default-badge][]][pipeline-default-link]
 
 [pipeline-default-badge]: https://gitlab.com/joeltimothyoh/docker-ansible/badges/master/pipeline.svg
-[pipeline-default-link]: https://hub.docker.com/r/joeltimothyoh/ansible
+[pipeline-default-link]: https://gitlab.com/joeltimothyoh/docker-ansible/commits/master
 
 Ansible on Docker on a variety of OS distributions.
 
