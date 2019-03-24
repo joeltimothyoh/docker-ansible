@@ -16,7 +16,7 @@ variables:
   before_script:
     - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
   script:
-    - VARIANT="${CI_JOB_NAME}-${OS_VARIANT}"
+    - VARIANT="${TOOL_VARIANT}-${OS}-${OS_VARIANT}"
     - BASE_IMAGE="${OS}:${OS_VARIANT}"
     - docker pull "${REPOSITORY}:${VARIANT}" || true
     - docker build
@@ -37,6 +37,7 @@ variables:
 
 2.7.8-ubuntu:
   variables:
+    TOOL_VARIANT: "2.7.8"
     OS: "ubuntu"
     OS_VARIANT: "18.04"
     DEFAULT: "true"
@@ -44,6 +45,7 @@ variables:
 
 2.5.5-alpine:
   variables:
+    TOOL_VARIANT: "2.7.8"
     OS: "alpine"
     OS_VARIANT: "3.8"
     DEFAULT: "true"
