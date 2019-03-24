@@ -20,7 +20,7 @@ variables:
         VARIANT="${ANSIBLE_VERSION}-${OS}-${OS_VARIANT}";
         docker pull "${REPOSITORY}:${VARIANT}" || true;
       else
-        VARIANT="debug"
+        VARIANT="debug";
       fi
     - docker build
         --cache-from "${REPOSITORY}:${VARIANT}"
@@ -28,7 +28,7 @@ variables:
         --build-arg BASE_IMAGE="${BASE_IMAGE}"
         "${OS}/"
     - if [ "${ANSIBLE_VERSION_OS_DEFAULT}" = 'true' ]; then
-        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:"${ANSIBLE_VERSION}-${OS}
+        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:"${ANSIBLE_VERSION}-${OS};
       fi
     - if [ "${OS_DEFAULT}" = 'true' ]; then
         docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:${OS}";
