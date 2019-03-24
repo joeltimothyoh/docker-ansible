@@ -66,10 +66,10 @@ debug-alpine:
     DEBUG: "true"
   <<: *build_definition
 
-2.7.8-ubuntu:
+2.7.9-ubuntu:
   extends: .ubuntu_1804_template
   variables:
-    ANSIBLE_VERSION: "2.7.8"
+    ANSIBLE_VERSION: "2.7.9"
     ANSIBLE_VERSION_OS_DEFAULT: "true"
     OS_DEFAULT: "true"
     LATEST: "true"
