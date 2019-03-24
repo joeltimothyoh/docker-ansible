@@ -16,8 +16,12 @@ variables:
   before_script:
     - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
   script:
-    - VARIANT="${ANSIBLE_VERSION}-${OS}-${OS_VARIANT}"
-    - docker pull "${REPOSITORY}:${VARIANT}" || true
+    - if [ ! "${DEBUG}" = 'true' ]; then
+        VARIANT="${ANSIBLE_VERSION}-${OS}-${OS_VARIANT}"
+        docker pull "${REPOSITORY}:${VARIANT}" || true
+      else
+        VARIANT="debug"
+      fi
     - docker build
         --cache-from "${REPOSITORY}:${VARIANT}"
         -t "${REPOSITORY}:${VARIANT}"
