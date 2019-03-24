@@ -48,7 +48,7 @@ variables:
   variables:
     OS: "ubuntu"
     OS_VARIANT: "18.04"
-    BASE_IMAGE: "bionic-20190204"
+    BASE_IMAGE: "ubuntu:bionic-20190204"
 .alpine_38_template:
   variables:
     OS: "alpine"
