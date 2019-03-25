@@ -72,7 +72,7 @@ debug-alpine:
   <<: *build_definition
 
 2.7.9-ubuntu-1604:
-  extends: .ubuntu_1804_template
+  extends: .ubuntu_1604_template
   variables:
     ANSIBLE_VERSION: "2.7.9"
     ANSIBLE_VERSION_OS_DEFAULT: "true"
