@@ -84,7 +84,6 @@ debug-alpine:
   extends: .ubuntu_1804_template
   variables:
     ANSIBLE_VERSION: "2.7.9"
-    LATEST: "true"
   <<: *build_definition
   when: manual
 2.5.5-alpine:
