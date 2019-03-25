@@ -44,6 +44,11 @@ variables:
   after_script:
     - docker logout
 
+.ubuntu_1604_template:
+  variables:
+    OS: "ubuntu"
+    OS_VARIANT: "16.04"
+    BASE_IMAGE: "ubuntu:xenial-20190222"
 .ubuntu_1804_template:
   variables:
     OS: "ubuntu"
@@ -56,7 +61,7 @@ variables:
     BASE_IMAGE: "alpine:3.8"
 
 debug-ubuntu:
-  extends: .ubuntu_1804_template
+  extends: .ubuntu_1604_template
   variables:
     DEBUG: "true"
   <<: *build_definition
@@ -66,12 +71,19 @@ debug-alpine:
     DEBUG: "true"
   <<: *build_definition
 
-2.7.9-ubuntu:
+2.7.9-ubuntu-1604:
   extends: .ubuntu_1804_template
   variables:
     ANSIBLE_VERSION: "2.7.9"
     ANSIBLE_VERSION_OS_DEFAULT: "true"
     OS_DEFAULT: "true"
+    LATEST: "true"
+  <<: *build_definition
+  when: manual
+2.7.9-ubuntu-1804:
+  extends: .ubuntu_1804_template
+  variables:
+    ANSIBLE_VERSION: "2.7.9"
     LATEST: "true"
   <<: *build_definition
   when: manual
