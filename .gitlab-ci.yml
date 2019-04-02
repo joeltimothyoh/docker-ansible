@@ -18,15 +18,21 @@ variables:
   script:
     - if [ ! "${DEBUG}" = 'true' ]; then
         VARIANT="${ANSIBLE_VERSION}-${OS}-${OS_VARIANT}";
-        docker pull "${REPOSITORY}:${VARIANT}" || true;
       else
         VARIANT="debug-${OS}-${OS_VARIANT}";
       fi
+    - if [ ! "${PPA}" = 'true' ]; then
+        BUILD_DIR="${OS}";
+      else
+        VARIANT="${VARIANT}-ppa"
+        BUILD_DIR="${OS}-ppa";
+      fi
+    - docker pull "${REPOSITORY}:${VARIANT}" || true;
     - docker build
         --cache-from "${REPOSITORY}:${VARIANT}"
         -t "${REPOSITORY}:${VARIANT}"
         --build-arg BASE_IMAGE="${BASE_IMAGE}"
-        "${OS}/"
+        "${BUILD_DIR}/"
     - if [ "${ANSIBLE_VERSION_OS_DEFAULT}" = 'true' ]; then
         docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:"${ANSIBLE_VERSION}-${OS};
       fi
@@ -44,6 +50,7 @@ variables:
   after_script:
     - docker logout
 
+# Templates
 .ubuntu_1604_template:
   variables:
     OS: "ubuntu"
@@ -54,43 +61,111 @@ variables:
     OS: "ubuntu"
     OS_VARIANT: "18.04"
     BASE_IMAGE: "ubuntu:bionic-20190204"
+
 .alpine_38_template:
   variables:
     OS: "alpine"
     OS_VARIANT: "3.8"
     BASE_IMAGE: "alpine:3.8"
+.alpine_39_template:
+  variables:
+    OS: "alpine"
+    OS_VARIANT: "3.9"
+    BASE_IMAGE: "alpine:3.9"
+.alpine_edge_template:
+  variables:
+    OS: "alpine"
+    OS_VARIANT: "edge"
+    BASE_IMAGE: "alpine:edge"
 
-debug-ubuntu:
+# Debug jobs
+debug-ubuntu-1604:
   extends: .ubuntu_1604_template
   variables:
     DEBUG: "true"
   <<: *build_definition
-debug-alpine:
+debug-ubuntu-1804:
+  extends: .ubuntu_1804_template
+  variables:
+    DEBUG: "true"
+  <<: *build_definition
+debug-ubuntu-1604-ppa:
+  extends: .ubuntu_1604_template
+  variables:
+    DEBUG: "true"
+    PPA: "true"
+  <<: *build_definition
+debug-ubuntu-1804-ppa:
+  extends: .ubuntu_1804_template
+  variables:
+    DEBUG: "true"
+    PPA: "true"
+  <<: *build_definition
+
+debug-alpine-38:
   extends: .alpine_38_template
   variables:
     DEBUG: "true"
   <<: *build_definition
+debug-alpine-39:
+  extends: .alpine_39_template
+  variables:
+    DEBUG: "true"
+  <<: *build_definition
+debug-alpine-edge:
+  extends: .alpine_edge_template
+  variables:
+    DEBUG: "true"
+  <<: *build_definition
 
-2.7.9-ubuntu-1604:
+# Jobs
+2.0.0.2-ubuntu-1604:
   extends: .ubuntu_1604_template
   variables:
-    ANSIBLE_VERSION: "2.7.9"
+    ANSIBLE_VERSION: "2.0.0.2"
     ANSIBLE_VERSION_OS_DEFAULT: "true"
     OS_DEFAULT: "true"
     LATEST: "true"
   <<: *build_definition
   when: manual
-2.7.9-ubuntu-1804:
+2.5.1-ubuntu-1804:
   extends: .ubuntu_1804_template
   variables:
+    ANSIBLE_VERSION: "2.5.1"
+  <<: *build_definition
+  when: manual
+2.7.9-ubuntu-1604-ppa:
+  extends: .ubuntu_1604_template
+  variables:
+    PPA: "true"
     ANSIBLE_VERSION: "2.7.9"
   <<: *build_definition
   when: manual
-2.5.5-alpine:
+2.7.9-ubuntu-1804-ppa:
+  extends: .ubuntu_1804_template
+  variables:
+    PPA: "true"
+    ANSIBLE_VERSION: "2.7.9"
+  <<: *build_definition
+  when: manual
+
+2.5.5-alpine-38:
   extends: .alpine_38_template
   variables:
     ANSIBLE_VERSION: "2.5.5"
     ANSIBLE_VERSION_OS_DEFAULT: "true"
     OS_DEFAULT: "true"
+  <<: *build_definition
+  when: manual
+2.7.0-alpine-39:
+  extends: .alpine_39_template
+  variables:
+    ANSIBLE_VERSION: "2.7.0"
+  <<: *build_definition
+  when: manual
+2.7.9-alpine-edge:
+  extends: .alpine_edge_template
+  variables:
+    ANSIBLE_VERSION: "2.7.9"
   <<: *build_definition
   when: manual
