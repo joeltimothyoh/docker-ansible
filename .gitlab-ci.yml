@@ -16,8 +16,9 @@ variables:
   before_script:
     - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
   script:
-    - VARIANT="${ANSIBLE_VERSION}-${OS}-${OS_VARIANT}";
-    - if [ "${DEBUG}" = 'true' ]; then
+    - if [ ! "${DEBUG}" = 'true' ]; then
+        VARIANT="${ANSIBLE_VERSION}-${OS}-${OS_VARIANT}";
+      else
         VARIANT="debug-${OS}-${OS_VARIANT}";
       fi
     - if [ ! "${PPA}" = 'true' ]; then
