@@ -13,6 +13,7 @@ variables:
 
 .build_template: &build_definition
   stage: build
+  allow_failure: false
   before_script:
     - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
   script:
