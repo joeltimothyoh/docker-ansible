@@ -6,7 +6,6 @@ RUN apt-get update \
     && apt-add-repository --yes --update ppa:ansible/ansible \
     && apt-get install -y ansible \
     && apt-get remove -y --autoremove software-properties-common \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/*
+    && rm -rf /var/lib/apt/lists/*
 
 CMD ["/bin/bash"]
