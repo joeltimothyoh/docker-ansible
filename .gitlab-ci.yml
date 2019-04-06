@@ -50,7 +50,7 @@ variables:
   after_script:
     - docker logout
 
-# Templates
+# OS templates
 .ubuntu_1604_template:
   variables:
     OS: "ubuntu"

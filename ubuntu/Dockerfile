@@ -3,7 +3,6 @@ FROM $BASE_IMAGE
 
 RUN apt-get update \
     && apt-get install -y ansible \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/*
+    && rm -rf /var/lib/apt/lists/*
 
 CMD ["/bin/bash"]
