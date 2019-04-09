@@ -85,39 +85,53 @@ debug-ubuntu-16.04:
   variables:
     DEBUG: "true"
   <<: *build_definition
+  except:
+   - master
 debug-ubuntu-18.04:
   extends: .ubuntu_18.04_template
   variables:
     DEBUG: "true"
   <<: *build_definition
+  except:
+   - master
 debug-ubuntu-16.04-ppa:
   extends: .ubuntu_16.04_template
   variables:
     DEBUG: "true"
     PPA: "true"
   <<: *build_definition
+  except:
+   - master
 debug-ubuntu-18.04-ppa:
   extends: .ubuntu_18.04_template
   variables:
     DEBUG: "true"
     PPA: "true"
   <<: *build_definition
+  except:
+   - master
 
 debug-alpine-3.8:
   extends: .alpine_3.8_template
   variables:
     DEBUG: "true"
   <<: *build_definition
+  except:
+   - master
 debug-alpine-3.9:
   extends: .alpine_3.9_template
   variables:
     DEBUG: "true"
   <<: *build_definition
+  except:
+   - master
 debug-alpine-edge:
   extends: .alpine_edge_template
   variables:
     DEBUG: "true"
   <<: *build_definition
+  except:
+   - master
 
 # Jobs
 2.0.0.2-ubuntu-16.04:
