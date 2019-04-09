@@ -11,7 +11,7 @@ variables:
   IMAGE_NAME: "ansible"
   REPOSITORY: "${CI_PROJECT_NAMESPACE}/${IMAGE_NAME}"
 
-.build_template:
+.build_template: &build_definition
   stage: build
   allow_failure: false
   before_script:
@@ -51,17 +51,6 @@ variables:
   after_script:
     - docker logout
 
-# Definitions
-.build_definition: &build_definition
-  extends: .build_template
-  when: manual
-
-.build_debug_definition: &build_debug_definition
-  extends: .build_template
-  except:
-    refs:
-      - master
-
 # OS templates
 .ubuntu_16.04_template:
   variables:
@@ -95,42 +84,40 @@ debug-ubuntu-16.04:
   extends: .ubuntu_16.04_template
   variables:
     DEBUG: "true"
-  <<: *build_debug_definition
-  except:
-    - master
+  <<: *build_definition
 debug-ubuntu-18.04:
   extends: .ubuntu_18.04_template
   variables:
     DEBUG: "true"
-  <<: *build_debug_definition
+  <<: *build_definition
 debug-ubuntu-16.04-ppa:
   extends: .ubuntu_16.04_template
   variables:
     DEBUG: "true"
     PPA: "true"
-  <<: *build_debug_definition
+  <<: *build_definition
 debug-ubuntu-18.04-ppa:
   extends: .ubuntu_18.04_template
   variables:
     DEBUG: "true"
     PPA: "true"
-  <<: *build_debug_definition
+  <<: *build_definition
 
 debug-alpine-3.8:
   extends: .alpine_3.8_template
   variables:
     DEBUG: "true"
-  <<: *build_debug_definition
+  <<: *build_definition
 debug-alpine-3.9:
   extends: .alpine_3.9_template
   variables:
     DEBUG: "true"
-  <<: *build_debug_definition
+  <<: *build_definition
 debug-alpine-edge:
   extends: .alpine_edge_template
   variables:
     DEBUG: "true"
-  <<: *build_debug_definition
+  <<: *build_definition
 
 # Jobs
 2.0.0.2-ubuntu-16.04:
@@ -141,23 +128,27 @@ debug-alpine-edge:
     OS_DEFAULT: "true"
     LATEST: "true"
   <<: *build_definition
+  when: manual
 2.5.1-ubuntu-18.04:
   extends: .ubuntu_18.04_template
   variables:
     ANSIBLE_VERSION: "2.5.1"
   <<: *build_definition
+  when: manual
 2.7.10-ubuntu-16.04-ppa:
   extends: .ubuntu_16.04_template
   variables:
     PPA: "true"
     ANSIBLE_VERSION: "2.7.10"
   <<: *build_definition
+  when: manual
 2.7.10-ubuntu-18.04-ppa:
   extends: .ubuntu_18.04_template
   variables:
     PPA: "true"
     ANSIBLE_VERSION: "2.7.10"
   <<: *build_definition
+  when: manual
 
 2.5.5-alpine-3.8:
   extends: .alpine_3.8_template
@@ -166,13 +157,16 @@ debug-alpine-edge:
     ANSIBLE_VERSION_OS_DEFAULT: "true"
     OS_DEFAULT: "true"
   <<: *build_definition
+  when: manual
 2.7.0-alpine-3.9:
   extends: .alpine_3.9_template
   variables:
     ANSIBLE_VERSION: "2.7.0"
   <<: *build_definition
+  when: manual
 2.7.9-alpine-edge:
   extends: .alpine_edge_template
   variables:
     ANSIBLE_VERSION: "2.7.9"
   <<: *build_definition
+  when: manual
