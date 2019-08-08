@@ -182,7 +182,7 @@
     <<: *build_definition
     except:
       - debug
-  2.7.12-alpine-3.10:
+  2.8.3-alpine-3.10:
     extends: .alpine_3.10_template
     variables:
       ANSIBLE_VERSION: "2.8.3"
