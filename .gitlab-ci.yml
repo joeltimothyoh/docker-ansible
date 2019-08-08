@@ -1,198 +1,198 @@
-  image: docker:latest
+image: docker:latest
 
-  services:
-    - docker:dind
+services:
+  - docker:dind
 
-  stages:
-    - build
+stages:
+  - build
 
+variables:
+  DOCKER_DRIVER: overlay2
+  IMAGE_NAME: "ansible"
+  REPOSITORY: "${CI_PROJECT_NAMESPACE}/${IMAGE_NAME}"
+
+.build_template: &build_definition
+  stage: build
+  before_script:
+    - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
+  script:
+    - if [ ! "${CI_COMMIT_REF_NAME}" = 'debug' ]; then
+        VARIANT="${ANSIBLE_VERSION}-${OS}-${OS_VARIANT}";
+      else
+        VARIANT="debug-${OS}-${OS_VARIANT}";
+      fi
+    - if [ ! "${PPA}" = 'true' ]; then
+        BUILD_DIR="${OS}";
+      else
+        VARIANT="${VARIANT}-ppa"
+        BUILD_DIR="${OS}-ppa";
+      fi
+    - docker pull "${REPOSITORY}:${VARIANT}" || true;
+    - docker build
+        --cache-from "${REPOSITORY}:${VARIANT}"
+        -t "${REPOSITORY}:${VARIANT}"
+        --build-arg BASE_IMAGE="${BASE_IMAGE}"
+        "${BUILD_DIR}/"
+    - if [ "${ANSIBLE_VERSION_OS_DEFAULT}" = 'true' ]; then
+        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:"${ANSIBLE_VERSION}-${OS};
+      fi
+    - if [ "${OS_DEFAULT}" = 'true' ]; then
+        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:${OS}";
+      fi
+    - if [ "${LATEST}" = 'true' ]; then
+        docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:latest";
+      fi
+    - docker images
+    - docker run -t --rm ${REPOSITORY}:${VARIANT} /bin/sh -c "ansible --version"
+    - if [ "${CI_COMMIT_REF_NAME}" = 'master' ] && [ ! "${DEBUG}" = 'true' ]; then
+        docker push "${REPOSITORY}";
+      fi
+  after_script:
+    - docker logout
+
+# OS templates
+.ubuntu_16.04_template:
   variables:
-    DOCKER_DRIVER: overlay2
-    IMAGE_NAME: "ansible"
-    REPOSITORY: "${CI_PROJECT_NAMESPACE}/${IMAGE_NAME}"
+    OS: "ubuntu"
+    OS_VARIANT: "16.04"
+    BASE_IMAGE: "ubuntu:xenial-20190222"
+.ubuntu_18.04_template:
+  variables:
+    OS: "ubuntu"
+    OS_VARIANT: "18.04"
+    BASE_IMAGE: "ubuntu:bionic-20190204"
 
-  .build_template: &build_definition
-    stage: build
-    before_script:
-      - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
-    script:
-      - if [ ! "${CI_COMMIT_REF_NAME}" = 'debug' ]; then
-          VARIANT="${ANSIBLE_VERSION}-${OS}-${OS_VARIANT}";
-        else
-          VARIANT="debug-${OS}-${OS_VARIANT}";
-        fi
-      - if [ ! "${PPA}" = 'true' ]; then
-          BUILD_DIR="${OS}";
-        else
-          VARIANT="${VARIANT}-ppa"
-          BUILD_DIR="${OS}-ppa";
-        fi
-      - docker pull "${REPOSITORY}:${VARIANT}" || true;
-      - docker build
-          --cache-from "${REPOSITORY}:${VARIANT}"
-          -t "${REPOSITORY}:${VARIANT}"
-          --build-arg BASE_IMAGE="${BASE_IMAGE}"
-          "${BUILD_DIR}/"
-      - if [ "${ANSIBLE_VERSION_OS_DEFAULT}" = 'true' ]; then
-          docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:"${ANSIBLE_VERSION}-${OS};
-        fi
-      - if [ "${OS_DEFAULT}" = 'true' ]; then
-          docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:${OS}";
-        fi
-      - if [ "${LATEST}" = 'true' ]; then
-          docker tag "${REPOSITORY}:${VARIANT}" "${REPOSITORY}:latest";
-        fi
-      - docker images
-      - docker run -t --rm ${REPOSITORY}:${VARIANT} /bin/sh -c "ansible --version"
-      - if [ "${CI_COMMIT_REF_NAME}" = 'master' ] && [ ! "${DEBUG}" = 'true' ]; then
-          docker push "${REPOSITORY}";
-        fi
-    after_script:
-      - docker logout
+.alpine_3.8_template:
+  variables:
+    OS: "alpine"
+    OS_VARIANT: "3.8"
+    BASE_IMAGE: "alpine:3.8"
+.alpine_3.9_template:
+  variables:
+    OS: "alpine"
+    OS_VARIANT: "3.9"
+    BASE_IMAGE: "alpine:3.9"
+.alpine_3.10_template:
+  variables:
+    OS: "alpine"
+    OS_VARIANT: "3.10"
+    BASE_IMAGE: "alpine:3.10"
+.alpine_edge_template:
+  variables:
+    OS: "alpine"
+    OS_VARIANT: "edge"
+    BASE_IMAGE: "alpine:edge"
 
-  # OS templates
-  .ubuntu_16.04_template:
-    variables:
-      OS: "ubuntu"
-      OS_VARIANT: "16.04"
-      BASE_IMAGE: "ubuntu:xenial-20190222"
-  .ubuntu_18.04_template:
-    variables:
-      OS: "ubuntu"
-      OS_VARIANT: "18.04"
-      BASE_IMAGE: "ubuntu:bionic-20190204"
+# Debug jobs
+debug-ubuntu-16.04:
+  extends: .ubuntu_16.04_template
+  <<: *build_definition
+  only:
+    refs:
+    - debug
+debug-ubuntu-18.04:
+  extends: .ubuntu_18.04_template
+  <<: *build_definition
+  only:
+    - debug
+debug-ubuntu-16.04-ppa:
+  extends: .ubuntu_16.04_template
+  variables:
+    PPA: "true"
+  <<: *build_definition
+  only:
+    - debug
+debug-ubuntu-18.04-ppa:
+  extends: .ubuntu_18.04_template
+  variables:
+    PPA: "true"
+  <<: *build_definition
+  only:
+    - debug
 
-  .alpine_3.8_template:
-    variables:
-      OS: "alpine"
-      OS_VARIANT: "3.8"
-      BASE_IMAGE: "alpine:3.8"
-  .alpine_3.9_template:
-    variables:
-      OS: "alpine"
-      OS_VARIANT: "3.9"
-      BASE_IMAGE: "alpine:3.9"
-  .alpine_3.10_template:
-    variables:
-      OS: "alpine"
-      OS_VARIANT: "3.10"
-      BASE_IMAGE: "alpine:3.10"
-  .alpine_edge_template:
-    variables:
-      OS: "alpine"
-      OS_VARIANT: "edge"
-      BASE_IMAGE: "alpine:edge"
+debug-alpine-3.8:
+  extends: .alpine_3.8_template
+  <<: *build_definition
+  only:
+    - debug
+debug-alpine-3.9:
+  extends: .alpine_3.9_template
+  <<: *build_definition
+  only:
+    - debug
+debug-alpine-3.10:
+  extends: .alpine_3.10_template
+  <<: *build_definition
+  only:
+    - debug
+debug-alpine-edge:
+  extends: .alpine_edge_template
+  <<: *build_definition
+  only:
+    - debug
 
-  # Debug jobs
-  debug-ubuntu-16.04:
-    extends: .ubuntu_16.04_template
-    <<: *build_definition
-    only:
-      refs:
-      - debug
-  debug-ubuntu-18.04:
-    extends: .ubuntu_18.04_template
-    <<: *build_definition
-    only:
-      - debug
-  debug-ubuntu-16.04-ppa:
-    extends: .ubuntu_16.04_template
-    variables:
-      PPA: "true"
-    <<: *build_definition
-    only:
-      - debug
-  debug-ubuntu-18.04-ppa:
-    extends: .ubuntu_18.04_template
-    variables:
-      PPA: "true"
-    <<: *build_definition
-    only:
-      - debug
+# Jobs
+2.0.0.2-ubuntu-16.04:
+  extends: .ubuntu_16.04_template
+  variables:
+    ANSIBLE_VERSION: "2.0.0.2"
+    ANSIBLE_VERSION_OS_DEFAULT: "true"
+    OS_DEFAULT: "true"
+    LATEST: "true"
+  <<: *build_definition
+  except:
+    - debug
+2.5.1-ubuntu-18.04:
+  extends: .ubuntu_18.04_template
+  variables:
+    ANSIBLE_VERSION: "2.5.1"
+  <<: *build_definition
+  except:
+    - debug
+2.8.3-ubuntu-16.04-ppa:
+  extends: .ubuntu_16.04_template
+  variables:
+    PPA: "true"
+    ANSIBLE_VERSION: "2.8.3"
+  <<: *build_definition
+  except:
+    - debug
+2.8.3-ubuntu-18.04-ppa:
+  extends: .ubuntu_18.04_template
+  variables:
+    PPA: "true"
+    ANSIBLE_VERSION: "2.8.3"
+  <<: *build_definition
+  except:
+    - debug
 
-  debug-alpine-3.8:
-    extends: .alpine_3.8_template
-    <<: *build_definition
-    only:
-      - debug
-  debug-alpine-3.9:
-    extends: .alpine_3.9_template
-    <<: *build_definition
-    only:
-      - debug
-  debug-alpine-3.10:
-    extends: .alpine_3.10_template
-    <<: *build_definition
-    only:
-      - debug
-  debug-alpine-edge:
-    extends: .alpine_edge_template
-    <<: *build_definition
-    only:
-      - debug
-
-  # Jobs
-  2.0.0.2-ubuntu-16.04:
-    extends: .ubuntu_16.04_template
-    variables:
-      ANSIBLE_VERSION: "2.0.0.2"
-      ANSIBLE_VERSION_OS_DEFAULT: "true"
-      OS_DEFAULT: "true"
-      LATEST: "true"
-    <<: *build_definition
-    except:
-      - debug
-  2.5.1-ubuntu-18.04:
-    extends: .ubuntu_18.04_template
-    variables:
-      ANSIBLE_VERSION: "2.5.1"
-    <<: *build_definition
-    except:
-      - debug
-  2.8.3-ubuntu-16.04-ppa:
-    extends: .ubuntu_16.04_template
-    variables:
-      PPA: "true"
-      ANSIBLE_VERSION: "2.8.3"
-    <<: *build_definition
-    except:
-      - debug
-  2.8.3-ubuntu-18.04-ppa:
-    extends: .ubuntu_18.04_template
-    variables:
-      PPA: "true"
-      ANSIBLE_VERSION: "2.8.3"
-    <<: *build_definition
-    except:
-      - debug
-
-  2.5.15-alpine-3.8:
-    extends: .alpine_3.8_template
-    variables:
-      ANSIBLE_VERSION: "2.5.15"
-      ANSIBLE_VERSION_OS_DEFAULT: "true"
-      OS_DEFAULT: "true"
-    <<: *build_definition
-    except:
-      - debug
-  2.7.12-alpine-3.9:
-    extends: .alpine_3.9_template
-    variables:
-      ANSIBLE_VERSION: "2.7.12"
-    <<: *build_definition
-    except:
-      - debug
-  2.8.3-alpine-3.10:
-    extends: .alpine_3.10_template
-    variables:
-      ANSIBLE_VERSION: "2.8.3"
-    <<: *build_definition
-    except:
-      - debug
-  2.8.3-alpine-edge:
-    extends: .alpine_edge_template
-    variables:
-      ANSIBLE_VERSION: "2.8.3"
-    <<: *build_definition
-    except:
-      - debug
+2.5.15-alpine-3.8:
+  extends: .alpine_3.8_template
+  variables:
+    ANSIBLE_VERSION: "2.5.15"
+    ANSIBLE_VERSION_OS_DEFAULT: "true"
+    OS_DEFAULT: "true"
+  <<: *build_definition
+  except:
+    - debug
+2.7.12-alpine-3.9:
+  extends: .alpine_3.9_template
+  variables:
+    ANSIBLE_VERSION: "2.7.12"
+  <<: *build_definition
+  except:
+    - debug
+2.8.3-alpine-3.10:
+  extends: .alpine_3.10_template
+  variables:
+    ANSIBLE_VERSION: "2.8.3"
+  <<: *build_definition
+  except:
+    - debug
+2.8.3-alpine-edge:
+  extends: .alpine_edge_template
+  variables:
+    ANSIBLE_VERSION: "2.8.3"
+  <<: *build_definition
+  except:
+    - debug
