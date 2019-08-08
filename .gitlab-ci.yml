@@ -88,7 +88,6 @@ debug-ubuntu-16.04:
   extends: .ubuntu_16.04_template
   <<: *build_definition
   only:
-    refs:
     - debug
 debug-ubuntu-18.04:
   extends: .ubuntu_18.04_template
