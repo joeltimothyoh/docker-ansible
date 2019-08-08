@@ -17,7 +17,7 @@ variables:
   before_script:
     - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin
   script:
-    - if [ ! "${DEBUG}" = 'true' ]; then
+    - if [ "${CI_COMMIT_REF_NAME}" = 'debug' ]; then
         VARIANT="${ANSIBLE_VERSION}-${OS}-${OS_VARIANT}";
       else
         VARIANT="debug-${OS}-${OS_VARIANT}";
@@ -82,56 +82,45 @@ variables:
 # Debug jobs
 debug-ubuntu-16.04:
   extends: .ubuntu_16.04_template
-  variables:
-    DEBUG: "true"
   <<: *build_definition
-  except:
-   - master
+  only:
+    refs:
+     - debug
 debug-ubuntu-18.04:
   extends: .ubuntu_18.04_template
-  variables:
-    DEBUG: "true"
   <<: *build_definition
-  except:
-   - master
+  only:
+    - debug
 debug-ubuntu-16.04-ppa:
   extends: .ubuntu_16.04_template
   variables:
-    DEBUG: "true"
     PPA: "true"
   <<: *build_definition
-  except:
-   - master
+  only:
+    - debug
 debug-ubuntu-18.04-ppa:
   extends: .ubuntu_18.04_template
   variables:
-    DEBUG: "true"
     PPA: "true"
   <<: *build_definition
-  except:
-   - master
+  only:
+    - debug
 
 debug-alpine-3.8:
   extends: .alpine_3.8_template
-  variables:
-    DEBUG: "true"
   <<: *build_definition
-  except:
-   - master
+  only:
+    - debug
 debug-alpine-3.9:
   extends: .alpine_3.9_template
-  variables:
-    DEBUG: "true"
   <<: *build_definition
-  except:
-   - master
+  only:
+    - debug
 debug-alpine-edge:
   extends: .alpine_edge_template
-  variables:
-    DEBUG: "true"
   <<: *build_definition
-  except:
-   - master
+  only:
+    - debug
 
 # Jobs
 2.0.0.2-ubuntu-16.04:
@@ -142,27 +131,23 @@ debug-alpine-edge:
     OS_DEFAULT: "true"
     LATEST: "true"
   <<: *build_definition
-  when: manual
 2.5.1-ubuntu-18.04:
   extends: .ubuntu_18.04_template
   variables:
     ANSIBLE_VERSION: "2.5.1"
   <<: *build_definition
-  when: manual
 2.8.3-ubuntu-16.04-ppa:
   extends: .ubuntu_16.04_template
   variables:
     PPA: "true"
     ANSIBLE_VERSION: "2.8.3"
   <<: *build_definition
-  when: manual
 2.8.3-ubuntu-18.04-ppa:
   extends: .ubuntu_18.04_template
   variables:
     PPA: "true"
     ANSIBLE_VERSION: "2.8.3"
   <<: *build_definition
-  when: manual
 
 2.5.15-alpine-3.8:
   extends: .alpine_3.8_template
@@ -171,16 +156,13 @@ debug-alpine-edge:
     ANSIBLE_VERSION_OS_DEFAULT: "true"
     OS_DEFAULT: "true"
   <<: *build_definition
-  when: manual
 2.7.12-alpine-3.9:
   extends: .alpine_3.9_template
   variables:
     ANSIBLE_VERSION: "2.7.12"
   <<: *build_definition
-  when: manual
 2.8.3-alpine-edge:
   extends: .alpine_edge_template
   variables:
     ANSIBLE_VERSION: "2.8.3"
   <<: *build_definition
-  when: manual
