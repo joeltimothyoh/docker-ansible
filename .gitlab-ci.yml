@@ -72,6 +72,11 @@
       OS: "alpine"
       OS_VARIANT: "3.9"
       BASE_IMAGE: "alpine:3.9"
+  .alpine_3.10_template:
+    variables:
+      OS: "alpine"
+      OS_VARIANT: "3.10"
+      BASE_IMAGE: "alpine:3.10"
   .alpine_edge_template:
     variables:
       OS: "alpine"
@@ -112,6 +117,11 @@
       - debug
   debug-alpine-3.9:
     extends: .alpine_3.9_template
+    <<: *build_definition
+    only:
+      - debug
+  debug-alpine-3.10:
+    extends: .alpine_3.10_template
     <<: *build_definition
     only:
       - debug
@@ -169,6 +179,13 @@
     extends: .alpine_3.9_template
     variables:
       ANSIBLE_VERSION: "2.7.12"
+    <<: *build_definition
+    except:
+      - debug
+  2.7.12-alpine-3.10:
+    extends: .alpine_3.10_template
+    variables:
+      ANSIBLE_VERSION: "2.8.3"
     <<: *build_definition
     except:
       - debug
