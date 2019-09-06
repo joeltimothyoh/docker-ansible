@@ -148,50 +148,50 @@ debug-alpine-edge:
   <<: *build_definition
   except:
     - debug
-2.8.3-ubuntu-16.04-ppa:
+2.8.4-ubuntu-16.04-ppa:
   extends: .ubuntu_16.04_template
   variables:
     PPA: "true"
-    ANSIBLE_VERSION: "2.8.3"
+    ANSIBLE_VERSION: "2.8.4"
   <<: *build_definition
   except:
     - debug
-2.8.3-ubuntu-18.04-ppa:
+2.8.4-ubuntu-18.04-ppa:
   extends: .ubuntu_18.04_template
   variables:
     PPA: "true"
-    ANSIBLE_VERSION: "2.8.3"
+    ANSIBLE_VERSION: "2.8.4"
   <<: *build_definition
   except:
     - debug
 
-2.5.15-alpine-3.8:
+2.6.19-alpine-3.8:
   extends: .alpine_3.8_template
   variables:
-    ANSIBLE_VERSION: "2.5.15"
+    ANSIBLE_VERSION: "2.6.19"
     ANSIBLE_VERSION_OS_DEFAULT: "true"
     OS_DEFAULT: "true"
   <<: *build_definition
   except:
     - debug
-2.7.12-alpine-3.9:
+2.7.13-alpine-3.9:
   extends: .alpine_3.9_template
   variables:
-    ANSIBLE_VERSION: "2.7.12"
+    ANSIBLE_VERSION: "2.7.13"
   <<: *build_definition
   except:
     - debug
-2.8.3-alpine-3.10:
+2.8.4-alpine-3.10:
   extends: .alpine_3.10_template
   variables:
-    ANSIBLE_VERSION: "2.8.3"
+    ANSIBLE_VERSION: "2.8.4"
   <<: *build_definition
   except:
     - debug
-2.8.3-alpine-edge:
+2.8.4-alpine-edge:
   extends: .alpine_edge_template
   variables:
-    ANSIBLE_VERSION: "2.8.3"
+    ANSIBLE_VERSION: "2.8.4"
   <<: *build_definition
   except:
     - debug
