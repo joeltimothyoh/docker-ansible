@@ -50,7 +50,7 @@ jobs:
       BUILD_REGISTRY_NAMESPACE: joeltimothyoh
       BUILD_IMAGE_NAME: ansible
       BUILD_TAG_FULL: ${{ matrix.ANSIBLE_VERSION }}-${{ matrix.OS }}-${{ matrix.OS_VARIANT }}
-      BUILD_CONTEXT: variants/${{ matrix.OS }}/${{ matrix.OS }}
+      BUILD_CONTEXT: variants/${{ matrix.OS }}/${{ matrix.OS_VARIANT }}
     steps:
     - uses: actions/checkout@v1
     - name: Display system info (linux)
@@ -135,7 +135,7 @@ jobs:
         - OS: ubuntu
           OS_VARIANT: 18.04
           PACKAGE_TYPE: default
-          ANSIBLE_VERSION: 2.5.1          
+          ANSIBLE_VERSION: 2.5.1
         - OS: ubuntu
           OS_VARIANT: 16.04
           PACKAGE_TYPE: ppa
@@ -161,7 +161,7 @@ jobs:
       BUILD_REGISTRY_NAMESPACE: joeltimothyoh
       BUILD_IMAGE_NAME: ansible
       BUILD_TAG_FULL: ${{ matrix.ANSIBLE_VERSION }}-${{ matrix.OS }}-${{ matrix.OS_VARIANT }}${{ matrix.SUFFIX_PPA }}
-      BUILD_CONTEXT: variants/${{ matrix.OS }}/${{ matrix.OS }}${{ matrix.SUFFIX_PPA }}
+      BUILD_CONTEXT: variants/${{ matrix.OS }}/${{ matrix.OS_VARIANT }}${{ matrix.SUFFIX_PPA }}
     steps:
     - uses: actions/checkout@v1
     - name: Display system info (linux)
