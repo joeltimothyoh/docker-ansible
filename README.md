@@ -8,7 +8,7 @@
 [badge-size-microbadger-size-tag-src]: https://microbadger.com/images/joeltimothyoh/ansible
 [badge-size-microbadger-layers-tag-img]: https://img.shields.io/microbadger/layers/joeltimothyoh/ansible/latest
 [badge-size-microbadger-layers-tag-src]: https://microbadger.com/images/joeltimothyoh/ansible
-[badge-custom-dockerhub-repo-img]: https://img.shields.io/badge/docker%20hub-joeltimothyoh/ansible-blue.svg?logo=docker&logoColor=2596EC&color=0D597F&label=&labelColor=&style=popout-square
+[badge-custom-dockerhub-repo-img]: https://img.shields.io/badge/docker%20hub-joeltimothyoh/ansible-blue.svg?logo=docker&logoColor=2596EC&color=C20000&label=&labelColor=&style=popout-square
 [badge-custom-dockerhub-repo-src]: https://hub.docker.com/r/joeltimothyoh/ansible
 
 Ansible on Docker on a variety of OS distributions.
