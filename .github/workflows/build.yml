@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         OS: [alpine]
-        OS_VARIANT: [3.8, 3.9, 3.10, edge]
+        OS_VARIANT: [3.8, 3.9, '3.10', edge]
         include:
         - OS: alpine
           OS_VARIANT: 3.8
@@ -45,7 +45,7 @@ jobs:
       BASE_TAG_FULL: ${{ matrix.OS_VARIANT }}
       BUILD_REGISTRY_NAMESPACE: joeltimothyoh
       BUILD_IMAGE_NAME: ansible
-      BUILD_TAG_FULL: ${{ matrix.ANSIBLE_VERSION }}-${{ matrix.OS }}
+      BUILD_TAG_FULL: ${{ matrix.ANSIBLE_VERSION }}-${{ matrix.OS }}-${{ matrix.OS_VARIANT }}
       BUILD_CONTEXT: variants/${{ matrix.OS }}
     steps:
     - uses: actions/checkout@v1
