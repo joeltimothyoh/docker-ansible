@@ -1,0 +1,227 @@
+name: build
+
+on:
+  push:
+    branches:
+    - '**'
+    tags:
+    - '**'
+  pull_request:
+    branches:
+    - '**'
+
+jobs:
+  alpine:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        OS: [alpine]
+        OS_VARIANT: [3.8, 3.9, '3.10', edge]
+        include:
+        - OS: alpine
+          OS_VARIANT: 3.8
+          BASE_IMAGE_TAG: 3.8
+          ANSIBLE_VERSION: 2.6.19
+        - OS: alpine
+          OS_VARIANT: 3.9
+          BASE_IMAGE_TAG: 3.9
+          ANSIBLE_VERSION: 2.7.13
+        - OS: alpine
+          OS_VARIANT: 3.10
+          BASE_IMAGE_TAG: '3.10'
+          ANSIBLE_VERSION: 2.8.4
+          TAG_ANSIBLE_OS: true
+          TAG_OS: true
+          TAG_LATEST: true
+        - OS: alpine
+          OS_VARIANT: edge
+          BASE_IMAGE_TAG: edge
+          ANSIBLE_VERSION: 2.8.6
+    env:
+      OS: ${{ matrix.OS }}
+      OS_VARIANT: ${{ matrix.OS_VARIANT }}
+      ANSIBLE_VERSION: ${{ matrix.ANSIBLE_VERSION }}
+      TAG_ANSIBLE_OS: ${{ matrix.TAG_ANSIBLE_OS }}
+      TAG_OS: ${{ matrix.TAG_OS }}
+      TAG_LATEST: ${{ matrix.TAG_LATEST }}
+      BASE_REGISTRY_NAMESPACE: library
+      BASE_IMAGE_NAME: ${{ matrix.OS }}
+      BASE_TAG_FULL: ${{ matrix.BASE_IMAGE_TAG }}
+      BUILD_REGISTRY_NAMESPACE: joeltimothyoh
+      BUILD_IMAGE_NAME: ansible
+      BUILD_TAG_FULL: ${{ matrix.ANSIBLE_VERSION }}-${{ matrix.OS }}-${{ matrix.OS_VARIANT }}
+      BUILD_CONTEXT: variants/${{ matrix.OS }}/${{ matrix.OS_VARIANT }}
+    steps:
+    - uses: actions/checkout@v1
+    - name: Display system info (linux)
+      run: |
+        set -e
+        hostname
+        whoami
+        cat /etc/*release
+        lscpu
+        free
+        df -h
+        pwd
+        docker info
+        docker version
+    - name: Login to docker registry
+      run: echo "${DOCKERHUB_REGISTRY_PASSWORD}" | docker login -u "${DOCKERHUB_REGISTRY_USER}" --password-stdin
+      env:
+        DOCKERHUB_REGISTRY_USER: joeltimothyoh
+        DOCKERHUB_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
+    - name: Build image
+      run: |
+        set -e
+        echo "OS: $OS"
+        echo "OS_VARIANT: $OS_VARIANT"
+        echo "ANSIBLE_VERSION: $ANSIBLE_VERSION"
+        echo "TAG_ANSIBLE_OS: $TAG_ANSIBLE_OS"
+        echo "TAG_OS: $TAG_OS"
+        echo "TAG_LATEST: $TAG_LATEST"
+        echo "BASE_IMAGE_NAME: $BASE_IMAGE_NAME"
+        echo "BASE_REGISTRY_NAMESPACE: $BASE_REGISTRY_NAMESPACE"
+        echo "BASE_IMAGE_NAME: $BASE_IMAGE_NAME"
+        echo "BASE_TAG_FULL: $BASE_TAG_FULL"
+        echo "BUILD_REGISTRY_NAMESPACE: $BUILD_REGISTRY_NAMESPACE"
+        echo "BUILD_IMAGE_NAME: $BUILD_IMAGE_NAME"
+        echo "BUILD_TAG_FULL: $BUILD_TAG_FULL"
+        echo "BUILD_CONTEXT: $BUILD_CONTEXT"
+        echo "BASE_IMAGE: ${BASE_REGISTRY_NAMESPACE}/${BASE_IMAGE_NAME}:${BASE_TAG_FULL}"
+        echo "BUILD_IMAGE: ${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}"
+        time docker pull "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" || true
+        time docker build \
+            --cache-from "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" \
+            -t "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" \
+            --build-arg BASE_IMAGE="${BASE_REGISTRY_NAMESPACE}/${BASE_IMAGE_NAME}:${BASE_TAG_FULL}" \
+            "$BUILD_CONTEXT"
+        if [ "${TAG_ANSIBLE_OS}" = 'true' ]; then
+            docker tag "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${ANSIBLE_VERSION}-${OS}"
+        fi
+        if [ "${TAG_OS}" = 'true' ]; then
+            docker tag "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${OS}"
+        fi
+        if [ "${TAG_LATEST}" = 'true' ]; then
+            docker tag "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:latest"
+        fi
+        docker images
+        docker inspect "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}"
+    - name: Test image
+      run: docker run -t --rm "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" /bin/sh -c "ansible --version"
+    - name: Push image
+      if: startsWith(github.ref, 'refs/tags/')
+      run: docker push "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}"
+    - name: Clean-up
+      run: docker logout
+      if: always()
+  ubuntu:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        OS: [ubuntu]
+        OS_VARIANT: [16.04, 18.04]
+        PACKAGE_TYPE: [default, ppa]
+        include:
+        - OS: ubuntu
+          OS_VARIANT: 16.04
+          BASE_IMAGE_TAG: xenial-20190222
+        - OS: ubuntu
+          OS_VARIANT: 18.04
+          BASE_IMAGE_TAG: bionic-20190204
+        - OS: ubuntu
+          OS_VARIANT: 16.04
+          PACKAGE_TYPE: default
+          ANSIBLE_VERSION: 2.0.0.2
+        - OS: ubuntu
+          OS_VARIANT: 18.04
+          PACKAGE_TYPE: default
+          ANSIBLE_VERSION: 2.5.1
+        - OS: ubuntu
+          OS_VARIANT: 16.04
+          PACKAGE_TYPE: ppa
+          SUFFIX_PPA: -ppa
+          ANSIBLE_VERSION: 2.8.6
+        - OS: ubuntu
+          OS_VARIANT: 18.04
+          PACKAGE_TYPE: ppa
+          SUFFIX_PPA: -ppa
+          ANSIBLE_VERSION: 2.9.0
+          TAG_ANSIBLE_OS: true
+          TAG_OS: true
+    env:
+      OS: ${{ matrix.OS }}
+      OS_VARIANT: ${{ matrix.OS_VARIANT }}
+      ANSIBLE_VERSION: ${{ matrix.ANSIBLE_VERSION }}
+      TAG_ANSIBLE_OS: ${{ matrix.TAG_ANSIBLE_OS }}
+      TAG_OS: ${{ matrix.TAG_OS }}
+      TAG_LATEST: ${{ matrix.TAG_LATEST }}
+      BASE_REGISTRY_NAMESPACE: library
+      BASE_IMAGE_NAME: ${{ matrix.OS }}
+      BASE_TAG_FULL: ${{ matrix.BASE_IMAGE_TAG }}
+      BUILD_REGISTRY_NAMESPACE: joeltimothyoh
+      BUILD_IMAGE_NAME: ansible
+      BUILD_TAG_FULL: ${{ matrix.ANSIBLE_VERSION }}-${{ matrix.OS }}-${{ matrix.OS_VARIANT }}${{ matrix.SUFFIX_PPA }}
+      BUILD_CONTEXT: variants/${{ matrix.OS }}/${{ matrix.OS_VARIANT }}${{ matrix.SUFFIX_PPA }}
+    steps:
+    - uses: actions/checkout@v1
+    - name: Display system info (linux)
+      run: |
+        set -e
+        hostname
+        whoami
+        cat /etc/*release
+        lscpu
+        free
+        df -h
+        pwd
+        docker info
+        docker version
+    - name: Login to docker registry
+      run: echo "${DOCKERHUB_REGISTRY_PASSWORD}" | docker login -u "${DOCKERHUB_REGISTRY_USER}" --password-stdin
+      env:
+        DOCKERHUB_REGISTRY_USER: joeltimothyoh
+        DOCKERHUB_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
+    - name: Build image
+      run: |
+        set -e
+        echo "OS: $OS"
+        echo "OS_VARIANT: $OS_VARIANT"
+        echo "ANSIBLE_VERSION: $ANSIBLE_VERSION"
+        echo "TAG_ANSIBLE_OS: $TAG_ANSIBLE_OS"
+        echo "TAG_OS: $TAG_OS"
+        echo "TAG_LATEST: $TAG_LATEST"
+        echo "BASE_IMAGE_NAME: $BASE_IMAGE_NAME"
+        echo "BASE_REGISTRY_NAMESPACE: $BASE_REGISTRY_NAMESPACE"
+        echo "BASE_IMAGE_NAME: $BASE_IMAGE_NAME"
+        echo "BASE_TAG_FULL: $BASE_TAG_FULL"
+        echo "BUILD_REGISTRY_NAMESPACE: $BUILD_REGISTRY_NAMESPACE"
+        echo "BUILD_IMAGE_NAME: $BUILD_IMAGE_NAME"
+        echo "BUILD_TAG_FULL: $BUILD_TAG_FULL"
+        echo "BUILD_CONTEXT: $BUILD_CONTEXT"
+        echo "BASE_IMAGE: ${BASE_REGISTRY_NAMESPACE}/${BASE_IMAGE_NAME}:${BASE_TAG_FULL}"
+        echo "BUILD_IMAGE: ${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}"
+        time docker pull "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" || true
+        time docker build \
+            --cache-from "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" \
+            -t "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" \
+            --build-arg BASE_IMAGE="${BASE_REGISTRY_NAMESPACE}/${BASE_IMAGE_NAME}:${BASE_TAG_FULL}" \
+            "$BUILD_CONTEXT"
+        if [ "${TAG_ANSIBLE_OS}" = 'true' ]; then
+            docker tag "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${ANSIBLE_VERSION}-${OS}"
+        fi
+        if [ "${TAG_OS}" = 'true' ]; then
+            docker tag "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${OS}"
+        fi
+        if [ "${TAG_LATEST}" = 'true' ]; then
+            docker tag "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:latest"
+        fi
+        docker images
+        docker inspect "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}"
+    - name: Test image
+      run: docker run -t --rm "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" /bin/sh -c "ansible --version"
+    - name: Push image
+      if: startsWith(github.ref, 'refs/tags/')
+      run: docker push "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}"
+    - name: Clean-up
+      run: docker logout
+      if: always()
