@@ -140,12 +140,12 @@ jobs:
           OS_VARIANT: 16.04
           PACKAGE_TYPE: ppa
           SUFFIX_PPA: -ppa
-          ANSIBLE_VERSION: 2.8.4
+          ANSIBLE_VERSION: 2.8.6
         - OS: ubuntu
           OS_VARIANT: 18.04
           PACKAGE_TYPE: ppa
           SUFFIX_PPA: -ppa
-          ANSIBLE_VERSION: 2.8.4
+          ANSIBLE_VERSION: 2.9.0
           TAG_ANSIBLE_OS: true
           TAG_OS: true
     env:
