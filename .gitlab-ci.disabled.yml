@@ -44,7 +44,7 @@ variables:
       fi
     - docker images
     - docker run -t --rm ${REPOSITORY}:${VARIANT} /bin/sh -c "ansible --version"
-    - if [ "${CI_COMMIT_REF_NAME}" = 'master' ] && [ ! "${DEBUG}" = 'true' ]; then
+    - if [ -n "${CI_COMMIT_TAG}" ] && [ ! "${DEBUG}" = 'true' ]; then
         docker push "${REPOSITORY}";
       fi
   after_script:
