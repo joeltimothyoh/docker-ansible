@@ -28,7 +28,7 @@ jobs:
           ANSIBLE_VERSION: 2.7.13
         - OS: alpine
           OS_VARIANT: 3.10
-          BASE_IMAGE_TAG: 3.10
+          BASE_IMAGE_TAG: '3.10'
           ANSIBLE_VERSION: 2.8.4
           TAG_ANSIBLE_OS: true
           TAG_OS: true
