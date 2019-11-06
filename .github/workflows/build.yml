@@ -30,7 +30,6 @@ jobs:
           OS_VARIANT: 3.10
           BASE_IMAGE_TAG: '3.10'
           ANSIBLE_VERSION: 2.8.4
-          TAG_ANSIBLE_OS: true
           TAG_OS: true
           TAG_LATEST: true
         - OS: alpine
@@ -41,7 +40,6 @@ jobs:
       OS: ${{ matrix.OS }}
       OS_VARIANT: ${{ matrix.OS_VARIANT }}
       ANSIBLE_VERSION: ${{ matrix.ANSIBLE_VERSION }}
-      TAG_ANSIBLE_OS: ${{ matrix.TAG_ANSIBLE_OS }}
       TAG_OS: ${{ matrix.TAG_OS }}
       TAG_LATEST: ${{ matrix.TAG_LATEST }}
       BASE_REGISTRY_NAMESPACE: library
@@ -76,7 +74,6 @@ jobs:
         echo "OS: $OS"
         echo "OS_VARIANT: $OS_VARIANT"
         echo "ANSIBLE_VERSION: $ANSIBLE_VERSION"
-        echo "TAG_ANSIBLE_OS: $TAG_ANSIBLE_OS"
         echo "TAG_OS: $TAG_OS"
         echo "TAG_LATEST: $TAG_LATEST"
         echo "BASE_REGISTRY_NAMESPACE: $BASE_REGISTRY_NAMESPACE"
@@ -94,9 +91,6 @@ jobs:
             -t "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" \
             --build-arg BASE_IMAGE="${BASE_REGISTRY_NAMESPACE}/${BASE_IMAGE_NAME}:${BASE_TAG_FULL}" \
             "$BUILD_CONTEXT"
-        if [ "${TAG_ANSIBLE_OS}" = 'true' ]; then
-            docker tag "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${ANSIBLE_VERSION}-${OS}"
-        fi
         if [ "${TAG_OS}" = 'true' ]; then
             docker tag "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${OS}"
         fi
@@ -145,13 +139,11 @@ jobs:
           PACKAGE_TYPE: ppa
           SUFFIX_PPA: -ppa
           ANSIBLE_VERSION: 2.9.0
-          TAG_ANSIBLE_OS: true
           TAG_OS: true
     env:
       OS: ${{ matrix.OS }}
       OS_VARIANT: ${{ matrix.OS_VARIANT }}
       ANSIBLE_VERSION: ${{ matrix.ANSIBLE_VERSION }}
-      TAG_ANSIBLE_OS: ${{ matrix.TAG_ANSIBLE_OS }}
       TAG_OS: ${{ matrix.TAG_OS }}
       TAG_LATEST: ${{ matrix.TAG_LATEST }}
       BASE_REGISTRY_NAMESPACE: library
@@ -186,7 +178,6 @@ jobs:
         echo "OS: $OS"
         echo "OS_VARIANT: $OS_VARIANT"
         echo "ANSIBLE_VERSION: $ANSIBLE_VERSION"
-        echo "TAG_ANSIBLE_OS: $TAG_ANSIBLE_OS"
         echo "TAG_OS: $TAG_OS"
         echo "TAG_LATEST: $TAG_LATEST"
         echo "BASE_REGISTRY_NAMESPACE: $BASE_REGISTRY_NAMESPACE"
@@ -204,9 +195,6 @@ jobs:
             -t "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" \
             --build-arg BASE_IMAGE="${BASE_REGISTRY_NAMESPACE}/${BASE_IMAGE_NAME}:${BASE_TAG_FULL}" \
             "$BUILD_CONTEXT"
-        if [ "${TAG_ANSIBLE_OS}" = 'true' ]; then
-            docker tag "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${ANSIBLE_VERSION}-${OS}"
-        fi
         if [ "${TAG_OS}" = 'true' ]; then
             docker tag "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${OS}"
         fi
