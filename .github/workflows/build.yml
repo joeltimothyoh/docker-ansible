@@ -16,26 +16,34 @@ jobs:
     strategy:
       matrix:
         OS: [alpine]
-        OS_VARIANT: [3.8, 3.9, '3.10', edge]
+        OS_VARIANT: [3.8, 3.9, '3.10', '3.11', '3.12', edge]
         include:
         - OS: alpine
           OS_VARIANT: 3.8
           BASE_IMAGE_TAG: 3.8
-          ANSIBLE_VERSION: 2.6.19
+          ANSIBLE_VERSION: 2.6.20
         - OS: alpine
           OS_VARIANT: 3.9
           BASE_IMAGE_TAG: 3.9
-          ANSIBLE_VERSION: 2.7.13
+          ANSIBLE_VERSION: 2.7.17
         - OS: alpine
           OS_VARIANT: 3.10
           BASE_IMAGE_TAG: '3.10'
-          ANSIBLE_VERSION: 2.8.4
+          ANSIBLE_VERSION: 2.8.11
+        - OS: alpine
+          OS_VARIANT: 3.11
+          BASE_IMAGE_TAG: '3.11'
+          ANSIBLE_VERSION: 2.9.7
           TAG_OS: true
           TAG_LATEST: true
         - OS: alpine
+          OS_VARIANT: 3.12
+          BASE_IMAGE_TAG: '3.12'
+          ANSIBLE_VERSION: 2.9.9
+        - OS: alpine
           OS_VARIANT: edge
           BASE_IMAGE_TAG: edge
-          ANSIBLE_VERSION: 2.8.6
+          ANSIBLE_VERSION: 2.9.9
     env:
       OS: ${{ matrix.OS }}
       OS_VARIANT: ${{ matrix.OS_VARIANT }}
@@ -133,12 +141,12 @@ jobs:
           OS_VARIANT: 16.04
           PACKAGE_TYPE: ppa
           SUFFIX_PPA: -ppa
-          ANSIBLE_VERSION: 2.8.6
+          ANSIBLE_VERSION: 2.9.12
         - OS: ubuntu
           OS_VARIANT: 18.04
           PACKAGE_TYPE: ppa
           SUFFIX_PPA: -ppa
-          ANSIBLE_VERSION: 2.9.0
+          ANSIBLE_VERSION: 2.9.12
           TAG_OS: true
     env:
       OS: ${{ matrix.OS }}
