@@ -111,7 +111,7 @@ jobs:
       run: docker run -t --rm "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" /bin/sh -c "ansible --version"
     - name: Push image
       if: startsWith(github.ref, 'refs/tags/')
-      run: docker push "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}"
+      run: docker push -a "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}"
     - name: Clean-up
       run: docker logout
       if: always()
@@ -215,7 +215,7 @@ jobs:
       run: docker run -t --rm "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" /bin/sh -c "ansible --version"
     - name: Push image
       if: startsWith(github.ref, 'refs/tags/')
-      run: docker push "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}"
+      run: docker push -a "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}"
     - name: Clean-up
       run: docker logout
       if: always()
