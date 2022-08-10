@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         OS: [alpine]
-        OS_VARIANT: [3.8, 3.9, '3.10', '3.11', '3.12', edge]
+        OS_VARIANT: [3.8, 3.9, '3.10', '3.11', '3.12', '3.13', '3.14', '3.15', '3.16', edge]
         include:
         - OS: alpine
           OS_VARIANT: 3.8
@@ -29,21 +29,37 @@ jobs:
         - OS: alpine
           OS_VARIANT: 3.10
           BASE_IMAGE_TAG: '3.10'
-          ANSIBLE_VERSION: 2.8.11
+          ANSIBLE_VERSION: 2.8.19
         - OS: alpine
           OS_VARIANT: 3.11
           BASE_IMAGE_TAG: '3.11'
-          ANSIBLE_VERSION: 2.9.7
-          TAG_OS: true
-          TAG_LATEST: true
+          ANSIBLE_VERSION: 2.9.18
         - OS: alpine
           OS_VARIANT: 3.12
           BASE_IMAGE_TAG: '3.12'
-          ANSIBLE_VERSION: 2.9.9
+          ANSIBLE_VERSION: 2.9.18
+        - OS: alpine
+          OS_VARIANT: 3.13
+          BASE_IMAGE_TAG: '3.13'
+          ANSIBLE_VERSION: 2.10.7
+        - OS: alpine
+          OS_VARIANT: 3.14
+          BASE_IMAGE_TAG: '3.14'
+          ANSIBLE_VERSION: 2.10.7
+        - OS: alpine
+          OS_VARIANT: 3.15
+          BASE_IMAGE_TAG: '3.15'
+          ANSIBLE_VERSION: 4.8.0
+          TAG_OS: true
+          TAG_LATEST: true
+        - OS: alpine
+          OS_VARIANT: 3.16
+          BASE_IMAGE_TAG: '3.16'
+          ANSIBLE_VERSION: 5.8.0
         - OS: alpine
           OS_VARIANT: edge
           BASE_IMAGE_TAG: edge
-          ANSIBLE_VERSION: 2.9.9
+          ANSIBLE_VERSION: 6.2.0
     env:
       OS: ${{ matrix.OS }}
       OS_VARIANT: ${{ matrix.OS_VARIANT }}
@@ -120,34 +136,58 @@ jobs:
     strategy:
       matrix:
         OS: [ubuntu]
-        OS_VARIANT: [16.04, 18.04]
+        OS_VARIANT: [16.04, 18.04, 20.04, 22.04]
         PACKAGE_TYPE: [default, ppa]
         include:
         - OS: ubuntu
           OS_VARIANT: 16.04
-          BASE_IMAGE_TAG: xenial-20190222
+          BASE_IMAGE_TAG: xenial-20210804
         - OS: ubuntu
           OS_VARIANT: 18.04
-          BASE_IMAGE_TAG: bionic-20190204
+          BASE_IMAGE_TAG: bionic-20220801
+        - OS: ubuntu
+          OS_VARIANT: 20.04
+          BASE_IMAGE_TAG: focal-20220801
+        - OS: ubuntu
+          OS_VARIANT: 22.04
+          BASE_IMAGE_TAG: jammy-20220801
         - OS: ubuntu
           OS_VARIANT: 16.04
           PACKAGE_TYPE: default
-          ANSIBLE_VERSION: 2.0.0.2
+          ANSIBLE_VERSION: 2.1.1.0
         - OS: ubuntu
           OS_VARIANT: 18.04
           PACKAGE_TYPE: default
           ANSIBLE_VERSION: 2.5.1
         - OS: ubuntu
+          OS_VARIANT: 20.04
+          PACKAGE_TYPE: default
+          ANSIBLE_VERSION: 2.9.6
+        - OS: ubuntu
+          OS_VARIANT: 22.04
+          PACKAGE_TYPE: default
+          ANSIBLE_VERSION: 2.10.7
+        - OS: ubuntu
           OS_VARIANT: 16.04
           PACKAGE_TYPE: ppa
           SUFFIX_PPA: -ppa
-          ANSIBLE_VERSION: 2.9.12
+          ANSIBLE_VERSION: 2.9.27
         - OS: ubuntu
           OS_VARIANT: 18.04
           PACKAGE_TYPE: ppa
           SUFFIX_PPA: -ppa
-          ANSIBLE_VERSION: 2.9.12
+          ANSIBLE_VERSION: 2.9.27
+        - OS: ubuntu
+          OS_VARIANT: 20.04
+          PACKAGE_TYPE: ppa
+          SUFFIX_PPA: -ppa
+          ANSIBLE_VERSION: 5.10.0
           TAG_OS: true
+        - OS: ubuntu
+          OS_VARIANT: 22.04
+          PACKAGE_TYPE: ppa
+          SUFFIX_PPA: -ppa
+          ANSIBLE_VERSION: 6.2.0
     env:
       OS: ${{ matrix.OS }}
       OS_VARIANT: ${{ matrix.OS_VARIANT }}

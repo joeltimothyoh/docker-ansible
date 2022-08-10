@@ -2,6 +2,6 @@ ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
 RUN apk search ansible \
-    && apk add --no-cache ansible=2.8.19-r0 openssh-client
+    && apk add --no-cache ansible=2.10.7-r0 openssh-client
 
 CMD ["/bin/sh"]
