@@ -148,13 +148,13 @@ jobs:
           BASE_IMAGE_TAG: xenial-20210804
         - OS: ubuntu
           OS_VARIANT: 18.04
-          BASE_IMAGE_TAG: bionic-20220801
+          BASE_IMAGE_TAG: bionic-20221130
         - OS: ubuntu
           OS_VARIANT: 20.04
-          BASE_IMAGE_TAG: focal-20220801
+          BASE_IMAGE_TAG: focal-20221130
         - OS: ubuntu
           OS_VARIANT: 22.04
-          BASE_IMAGE_TAG: jammy-20220801
+          BASE_IMAGE_TAG: jammy-20221130
         - OS: ubuntu
           OS_VARIANT: 16.04
           PACKAGE_TYPE: default
