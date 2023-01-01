@@ -6,4 +6,4 @@ RUN apt-get update \
     && apt-get install -y ansible=2.9.6+dfsg-1 openssh-client \
     && rm -rf /var/lib/apt/lists/*
 
-CMD ["ansible"]
+CMD ["/bin/bash"]
