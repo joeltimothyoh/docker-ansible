@@ -6,4 +6,4 @@ RUN apk update \
     && apk add --no-cache ansible=2.9.18-r0 openssh-client \
     && rm -rf /var/cache/apk/*
 
-CMD ["/bin/sh"]
+CMD ["ansible"]

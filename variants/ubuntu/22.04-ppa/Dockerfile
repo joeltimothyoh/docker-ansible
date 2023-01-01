@@ -9,4 +9,4 @@ RUN apt-get update \
     && apt-get remove -y --autoremove software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
-CMD ["/bin/bash"]
+CMD ["ansible"]
