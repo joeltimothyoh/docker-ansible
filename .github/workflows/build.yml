@@ -128,7 +128,7 @@ jobs:
         docker images
         docker inspect "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}"
     - name: Test image
-      run: docker run -t --rm "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" /bin/sh -c "ansible --version"
+      run: docker run -t --rm "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" ansible --version
     - name: Push image
       if: startsWith(github.ref, 'refs/tags/')
       run: docker push -a "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}"
@@ -256,7 +256,7 @@ jobs:
         docker images
         docker inspect "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}"
     - name: Test image
-      run: docker run -t --rm "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" /bin/sh -c "ansible --version"
+      run: docker run -t --rm "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}:${BUILD_TAG_FULL}" ansible --version
     - name: Push image
       if: startsWith(github.ref, 'refs/tags/')
       run: docker push -a "${BUILD_REGISTRY_NAMESPACE}/${BUILD_IMAGE_NAME}"
