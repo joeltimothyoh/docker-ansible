@@ -73,7 +73,7 @@ jobs:
       BASE_REGISTRY_NAMESPACE: library
       BASE_IMAGE_NAME: ${{ matrix.OS }}
       BASE_TAG_FULL: ${{ matrix.BASE_IMAGE_TAG }}
-      BUILD_REGISTRY_NAMESPACE: joeltimothyoh
+      BUILD_REGISTRY_NAMESPACE: ${{ vars.DOCKERHUB_REGISTRY_USER }}
       BUILD_IMAGE_NAME: ansible
       BUILD_TAG_FULL: ${{ matrix.ANSIBLE_VERSION }}-${{ matrix.OS }}-${{ matrix.OS_VARIANT }}
       BUILD_CONTEXT: variants/${{ matrix.OS }}/${{ matrix.OS_VARIANT }}
@@ -94,7 +94,7 @@ jobs:
     - name: Login to docker registry
       run: echo "${DOCKERHUB_REGISTRY_PASSWORD}" | docker login -u "${DOCKERHUB_REGISTRY_USER}" --password-stdin
       env:
-        DOCKERHUB_REGISTRY_USER: joeltimothyoh
+        DOCKERHUB_REGISTRY_USER: ${{ vars.DOCKERHUB_REGISTRY_USER }}
         DOCKERHUB_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
     - name: Build image
       run: |
@@ -201,7 +201,7 @@ jobs:
       BASE_REGISTRY_NAMESPACE: library
       BASE_IMAGE_NAME: ${{ matrix.OS }}
       BASE_TAG_FULL: ${{ matrix.BASE_IMAGE_TAG }}
-      BUILD_REGISTRY_NAMESPACE: joeltimothyoh
+      BUILD_REGISTRY_NAMESPACE: ${{ vars.DOCKERHUB_REGISTRY_USER }}
       BUILD_IMAGE_NAME: ansible
       BUILD_TAG_FULL: ${{ matrix.ANSIBLE_VERSION }}-${{ matrix.OS }}-${{ matrix.OS_VARIANT }}${{ matrix.SUFFIX_PPA }}
       BUILD_CONTEXT: variants/${{ matrix.OS }}/${{ matrix.OS_VARIANT }}${{ matrix.SUFFIX_PPA }}
@@ -222,7 +222,7 @@ jobs:
     - name: Login to docker registry
       run: echo "${DOCKERHUB_REGISTRY_PASSWORD}" | docker login -u "${DOCKERHUB_REGISTRY_USER}" --password-stdin
       env:
-        DOCKERHUB_REGISTRY_USER: joeltimothyoh
+        DOCKERHUB_REGISTRY_USER: ${{ vars.DOCKERHUB_REGISTRY_USER }}
         DOCKERHUB_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
     - name: Build image
       run: |
