@@ -78,7 +78,7 @@ jobs:
       BUILD_TAG_FULL: ${{ matrix.ANSIBLE_VERSION }}-${{ matrix.OS }}-${{ matrix.OS_VARIANT }}
       BUILD_CONTEXT: variants/${{ matrix.OS }}/${{ matrix.OS_VARIANT }}
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Display system info (linux)
       run: |
         set -e
@@ -206,7 +206,7 @@ jobs:
       BUILD_TAG_FULL: ${{ matrix.ANSIBLE_VERSION }}-${{ matrix.OS }}-${{ matrix.OS_VARIANT }}${{ matrix.SUFFIX_PPA }}
       BUILD_CONTEXT: variants/${{ matrix.OS }}/${{ matrix.OS_VARIANT }}${{ matrix.SUFFIX_PPA }}
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Display system info (linux)
       run: |
         set -e
