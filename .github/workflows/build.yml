@@ -264,20 +264,6 @@ jobs:
       run: docker logout
       if: always()
 
-  dockerhub-description:
-    runs-on: ubuntu-latest
-    needs: [alpine, ubuntu]
-    if: github.ref == 'refs/heads/master'
-    steps:
-    - uses: actions/checkout@v3
-    - uses: peter-evans/dockerhub-description@v3
-      with:
-        username: ${{ vars.DOCKERHUB_REGISTRY_USER }}
-        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
-        repository: ${{ vars.DOCKERHUB_REGISTRY_USER }}/ansible
-        short-description: ${{ github.event.repository.description }}
-        readme-filepath: README.md
-
   update-draft-release:
     needs: [alpine, ubuntu]
     if: github.ref == 'refs/heads/master'
@@ -303,3 +289,17 @@ jobs:
         tag: ${{ github.ref_name }} # E.g. 'master' or 'v1.2.3'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  dockerhub-description:
+    runs-on: ubuntu-latest
+    needs: [alpine, ubuntu]
+    if: github.ref == 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v3
+    - uses: peter-evans/dockerhub-description@v3
+      with:
+        username: ${{ vars.DOCKERHUB_REGISTRY_USER }}
+        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
+        repository: ${{ vars.DOCKERHUB_REGISTRY_USER }}/ansible
+        short-description: ${{ github.event.repository.description }}
+        readme-filepath: README.md
