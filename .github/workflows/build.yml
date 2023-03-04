@@ -283,11 +283,12 @@ jobs:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-      - uses: release-drafter/release-drafter@v5
-        with:
-          config-name: release-drafter.yml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: release-drafter/release-drafter@v5
+      with:
+        config-name: release-drafter.yml
+        publish: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-draft-release:
     needs: [alpine, ubuntu]
@@ -298,5 +299,7 @@ jobs:
       with:
         config-name: release-drafter.yml
         publish: true
+        name: ${{ github.ref_name }} # E.g. 'master' or 'v1.2.3'
+        tag: ${{ github.ref_name }} # E.g. 'master' or 'v1.2.3'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
