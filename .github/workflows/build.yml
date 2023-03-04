@@ -63,7 +63,7 @@ jobs:
         - OS: alpine
           OS_VARIANT: edge
           BASE_IMAGE_TAG: edge
-          ANSIBLE_VERSION: 7.1.0
+          ANSIBLE_VERSION: 7.3.0
     env:
       OS: ${{ matrix.OS }}
       OS_VARIANT: ${{ matrix.OS_VARIANT }}
