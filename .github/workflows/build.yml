@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         OS: [alpine]
-        OS_VARIANT: [3.8, 3.9, '3.10', '3.11', '3.12', '3.13', '3.14', '3.15', '3.16', '3.17', edge]
+        OS_VARIANT: [3.8, 3.9, 3.10, 3.11, 3.12, 3.13, 3.14, 3.15, 3.16, 3.17, edge]
         include:
         - OS: alpine
           OS_VARIANT: 3.8
@@ -28,37 +28,37 @@ jobs:
           ANSIBLE_VERSION: 2.7.17
         - OS: alpine
           OS_VARIANT: 3.10
-          BASE_IMAGE_TAG: '3.10'
+          BASE_IMAGE_TAG: 3.10
           ANSIBLE_VERSION: 2.8.19
         - OS: alpine
           OS_VARIANT: 3.11
-          BASE_IMAGE_TAG: '3.11'
+          BASE_IMAGE_TAG: 3.11
           ANSIBLE_VERSION: 2.9.18
         - OS: alpine
           OS_VARIANT: 3.12
-          BASE_IMAGE_TAG: '3.12'
+          BASE_IMAGE_TAG: 3.12
           ANSIBLE_VERSION: 2.9.18
         - OS: alpine
           OS_VARIANT: 3.13
-          BASE_IMAGE_TAG: '3.13'
+          BASE_IMAGE_TAG: 3.13
           ANSIBLE_VERSION: 2.10.7
         - OS: alpine
           OS_VARIANT: 3.14
-          BASE_IMAGE_TAG: '3.14'
+          BASE_IMAGE_TAG: 3.14
           ANSIBLE_VERSION: 2.10.7
         - OS: alpine
           OS_VARIANT: 3.15
-          BASE_IMAGE_TAG: '3.15'
+          BASE_IMAGE_TAG: 3.15
           ANSIBLE_VERSION: 4.8.0
         - OS: alpine
           OS_VARIANT: 3.16
-          BASE_IMAGE_TAG: '3.16'
+          BASE_IMAGE_TAG: 3.16
           ANSIBLE_VERSION: 5.8.0
           TAG_OS: true
           TAG_LATEST: true
         - OS: alpine
           OS_VARIANT: 3.17
-          BASE_IMAGE_TAG: '3.17'
+          BASE_IMAGE_TAG: 3.17
           ANSIBLE_VERSION: 6.6.0
         - OS: alpine
           OS_VARIANT: edge
