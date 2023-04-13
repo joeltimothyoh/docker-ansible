@@ -10,6 +10,6 @@
 [badge-image-dockerhub-size-badge]: https://img.shields.io/docker/image-size/joeltimothyoh/ansible/latest?style=flat-square
 [badge-custom-dockerhub-repo-img]: https://img.shields.io/badge/docker%20hub-joeltimothyoh/ansible-blue.svg?logo=docker&logoColor=2596EC&color=C20000&label=&labelColor=&style=popout-square
 
-Ansible on Docker on a variety of OS distributions.
+Dockerized Ansible on a variety of OS distributions.
 
 [![badge-custom-dockerhub-repo-img][]][badge-image-dockerhub-src]
