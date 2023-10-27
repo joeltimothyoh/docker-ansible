@@ -67,7 +67,7 @@ jobs:
         - OS: alpine
           OS_VARIANT: edge
           BASE_IMAGE_TAG: edge
-          ANSIBLE_VERSION: 8.0.0
+          ANSIBLE_VERSION: 8.4.0
     env:
       OS: ${{ matrix.OS }}
       OS_VARIANT: ${{ matrix.OS_VARIANT }}
@@ -195,7 +195,7 @@ jobs:
           OS_VARIANT: 22.04
           PACKAGE_TYPE: ppa
           SUFFIX_PPA: -ppa
-          ANSIBLE_VERSION: 7.6.0
+          ANSIBLE_VERSION: 8.5.0
     env:
       OS: ${{ matrix.OS }}
       OS_VARIANT: ${{ matrix.OS_VARIANT }}
