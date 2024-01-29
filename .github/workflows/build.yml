@@ -54,8 +54,6 @@ jobs:
           OS_VARIANT: 3.16
           BASE_IMAGE_TAG: '3.16'
           ANSIBLE_VERSION: 5.8.0
-          TAG_OS: true
-          TAG_LATEST: true
         - OS: alpine
           OS_VARIANT: 3.17
           BASE_IMAGE_TAG: '3.17'
@@ -64,6 +62,8 @@ jobs:
           OS_VARIANT: 3.18
           BASE_IMAGE_TAG: '3.18'
           ANSIBLE_VERSION: 7.5.0
+          TAG_OS: true
+          TAG_LATEST: true
         - OS: alpine
           OS_VARIANT: 3.19
           BASE_IMAGE_TAG: '3.19'
