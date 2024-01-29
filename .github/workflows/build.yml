@@ -153,16 +153,16 @@ jobs:
         include:
         - OS: ubuntu
           OS_VARIANT: 16.04
-          BASE_IMAGE_TAG: xenial-20210804
+          BASE_IMAGE_TAG: 16.04
         - OS: ubuntu
           OS_VARIANT: 18.04
-          BASE_IMAGE_TAG: bionic-20221130
+          BASE_IMAGE_TAG: 18.04
         - OS: ubuntu
           OS_VARIANT: 20.04
-          BASE_IMAGE_TAG: focal-20221130
+          BASE_IMAGE_TAG: 20.04
         - OS: ubuntu
           OS_VARIANT: 22.04
-          BASE_IMAGE_TAG: jammy-20221130
+          BASE_IMAGE_TAG: 22.04
         - OS: ubuntu
           OS_VARIANT: 16.04
           PACKAGE_TYPE: default
