@@ -3,7 +3,7 @@ FROM $BASE_IMAGE
 
 RUN apk update \
     && apk search ansible \
-    && apk add --no-cache ansible=9.1.0-r0 openssh-client \
+    && apk add --no-cache ansible=9.3.0-r0 openssh-client \
     && rm -rf /var/cache/apk/*
 
 CMD ["/bin/sh"]
